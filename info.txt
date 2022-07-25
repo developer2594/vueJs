@@ -76,3 +76,7 @@ collaborate (see also: git help workflows)
 concept guides. See 'git help <command>' or 'git help <concept>'
 to read about a specific subcommand or concept.
 See 'git help git' for an overview of the system.
+=== 'git help -a' и 'git help -g' перечисляют доступные подкоманды и некоторые
+руководства по концепциям. См. «git help <command>» или «git help <concept>».
+чтобы прочитать об определенной подкоманде или понятии.
+См. «git help git» для обзора системы.
