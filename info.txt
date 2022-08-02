@@ -12,6 +12,7 @@ git checkout 'name branch' переход на другую ветку
 git remote add origin https://github.com/developer2594/portfolioEnd.git
 git branch -M main создание ветки main
 git push -u origin main отправка проекта на git
+git push -u origin main отправка проекта на git
 
 git clone и вставляем ссылку на проект в git для закачки на комп
 git pull origin 'имя ветки' для закачка на комп ветку
