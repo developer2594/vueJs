@@ -1,12 +1,41 @@
 <template>
   <div class="container mx-auto flex flex-col items-center bg-gray-100 p-4">
     <div class="container">
+      <!-- loading -->
+      <div
+        v-if="false"
+        class="fixed w-100 h-100 opacity-80 bg-purple-800 inset-0 z-50 flex items-center justify-center"
+      >
+        <svg
+          class="animate-spin -ml-1 mr-3 h-12 w-12 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          ></path>
+        </svg>
+      </div>
+      <!-- -->
+
       <section>
         <div class="flex">
           <div class="max-w-xs">
             <label for="wallet" class="block text-sm font-medium text-gray-700"
               >Тикер
             </label>
+            <!-- input добавления монеты -->
             <div class="mt-1 relative rounded-md shadow-md">
               <input
                 v-model="ticker"
@@ -18,7 +47,10 @@
                 placeholder="Например DOGE"
               />
             </div>
+            <!--  -->
+            <!-- найденные монетки -->
             <div
+              v-if="false"
               class="flex bg-white shadow-md p-1 rounded-md shadow-md flex-wrap"
             >
               <span
@@ -42,9 +74,15 @@
                 CHD
               </span>
             </div>
-            <div class="text-sm text-red-600">Такой тикер уже добавлен</div>
+            <!--  -->
+            <!-- предупреждение о добавленнай монетке -->
+            <div v-if="false" class="text-sm text-red-600">
+              Такой тикер уже добавлен
+            </div>
+            <!--  -->
           </div>
         </div>
+        <!-- button add ticket -->
         <button
           @click="add"
           type="button"
@@ -65,7 +103,9 @@
           </svg>
           Добавить
         </button>
+        <!--  -->
       </section>
+
       <template v-if="tickers.length">
         <hr class="w-full border-t border-gray-600 my-4" />
         <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
@@ -78,15 +118,18 @@
             }"
             class="bg-white overflow-hidden shadow rounded-lg border-purple-800 border-solid cursor-pointer"
           >
+            <!-- ticket -->
             <div class="px-4 py-5 sm:p-6 text-center">
               <dt class="text-sm font-medium text-gray-500 truncate">
-                {{ t.name }} - USD
+                {{ t.name.toUpperCase() }} - USD
               </dt>
               <dd class="mt-1 text-3xl font-semibold text-gray-900">
                 {{ t.price }}
               </dd>
             </div>
+            <!--  -->
             <div class="w-full border-t border-gray-200"></div>
+            <!-- delete ticket -->
             <button
               @click.stop="handleDelete(t)"
               class="flex items-center justify-center font-medium w-full bg-gray-100 px-4 py-4 sm:px-6 text-md text-gray-500 hover:text-gray-600 hover:bg-gray-200 hover:opacity-20 transition-all focus:outline-none"
@@ -105,14 +148,17 @@
                 ></path></svg
               >Удалить
             </button>
+            <!--  -->
           </div>
         </dl>
         <hr class="w-full border-t border-gray-600 my-4" />
       </template>
+
       <section v-if="sel && tickers.length" class="relative">
         <h3 class="text-lg leading-6 font-medium text-gray-900 my-8">
           {{ sel.name }} - USD
         </h3>
+        <!-- select -->
         <div class="flex items-end border-gray-600 border-b border-l h-64">
           <div
             v-for="(bar, idx) in normalizeGraph()"
@@ -121,6 +167,8 @@
             class="bg-purple-800 border w-5"
           ></div>
         </div>
+        <!--  -->
+        <!-- select dell -->
         <button
           @click="sel = null"
           type="button"
@@ -148,6 +196,7 @@
             </g>
           </svg>
         </button>
+        <!--  -->
       </section>
     </div>
   </div>
@@ -162,8 +211,25 @@ export default {
       ticker: "",
       tickers: [],
       sel: null,
-      graph: []
+      graph: [],
+      coins: []
     };
+  },
+
+  mounted: function() {
+    const coin = {
+      coin: this.coins
+    };
+    this.coins.push(coin);
+    setTimeout(async () => {
+      const fu = await fetch(
+        `https://min-api.cryptocompare.com/data/all/coinlist?summary=true`
+      );
+      const data = await fu.json();
+      console.log(data);
+
+      console.log(this.coins);
+    }, 1000);
   },
 
   methods: {
@@ -172,7 +238,6 @@ export default {
         name: this.ticker,
         price: "-"
       };
-
       this.tickers.push(currentTicker);
       setInterval(async () => {
         const f = await fetch(
@@ -185,8 +250,11 @@ export default {
           this.graph.push(data.USD);
         }
       }, 5000);
+
       this.ticker = "";
     },
+
+    // https://min-api.cryptocompare.com/data/all/coinlist?summary=true
 
     select(ticker) {
       this.sel = ticker;
