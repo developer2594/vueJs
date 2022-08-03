@@ -111,13 +111,17 @@
           <!-- filter -->
           <button
             class="my-4 mx-2 inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-gray-600 hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            v-if="page > 1"
+            @click="page = page - 1"
           >
-            Вперёд
+            Назад
           </button>
           <button
             class="my-4 mx-2 inline-flex items-center py-2 px-4 border border-transparent shadow-sm text-sm leading-4 font-medium rounded-full text-white bg-gray-600 hover:bg-gray-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            v-if="hasNextPage"
+            @click="page = page + 1"
           >
-            Назад
+            Вперёд
           </button>
           <div>Фильтр: <input v-model="filter" /></div>
         </div>
@@ -229,11 +233,24 @@ export default {
       sel: null,
       graph: [],
       page: 1,
-      filter: ""
+      filter: "",
+      hasNextPage: true
     };
   },
 
   created() {
+    const windowData = Object.fromEntries(
+      new URL(window.location).searchParams.entries()
+    );
+
+    if (windowData.filter) {
+      this.filter = windowData.filter;
+    }
+
+    if (windowData.page) {
+      this.page = windowData.page;
+    }
+    // save to local storeg
     const tickersData = localStorage.getItem("cryptonomicon-list");
     if (tickersData) {
       this.tickers = JSON.parse(tickersData);
@@ -246,13 +263,16 @@ export default {
   methods: {
     filtredTickers() {
       const start = (this.page - 1) * 6;
-      const end = this.page * 6 - 1;
-      return this.tickers
-        .filter(ticker => ticker.name.includes(this.filter))
-        .slice();
+      const end = this.page * 6;
+      const filtredTickers = this.tickers.filter(ticker =>
+        ticker.name.includes(this.filter)
+      );
+      this.hasNextPage = filtredTickers.length > end;
+      return filtredTickers.slice(start, end);
     },
 
     subscribeToUpdates(tickerName) {
+      // получение данных из сервера
       setInterval(async () => {
         const f = await fetch(
           `https://min-api.cryptocompare.com/data/price?fsym=${tickerName}&tsyms=USD&api_key=c0e03c0d30b9075756e9759fa40dcbd551ac802a4a476729c44fe78b925b570e`
@@ -296,6 +316,23 @@ export default {
       const minValue = Math.min(...this.graph);
       return this.graph.map(
         price => 5 + ((price - minValue) * 95) / (maxValue - minValue)
+      );
+    }
+  },
+  watch: {
+    filter() {
+      this.page = 1;
+      window.history.pushState(
+        null,
+        document.title,
+        `${window.location.pathname}?filter=${this.filter}&page=${this.page}`
+      );
+    },
+    page() {
+      window.history.pushState(
+        null,
+        document.title,
+        `${window.location.pathname}?filter=${this.filter}&page=${this.page}`
       );
     }
   }
