@@ -42,7 +42,6 @@
                 placeholder="Например DOGE"
               />
             </div>
-            <div>{{ ticker }}</div>
             <div
               class="flex bg-white shadow-md p-1 rounded-md shadow-md flex-wrap"
             >
