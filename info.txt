@@ -1,5 +1,7 @@
 git config --global user.name 'ahmad' открытие имени пользователя
 git config --global user.email 'developer2594@gmail.com'
+git remote add origin https://github.com/developer2594/portfolioEnd.git
+
 git config --list показывает настройки
 git config --global core.autocrlf true для винды чтобы не было ошибок
 git init сoздаёт папку .git
@@ -10,7 +12,7 @@ git commit -m 'имя комита'
 git checkout -b 'имя новой ветки' создаст и перейдёт на новую ветку
 git branch -D name branch удаление ветки
 git checkout 'name branch' переход на другую ветку
-git remote add origin https://github.com/developer2594/portfolioEnd.git 
+ 
 связка репозитория с git hub
 git branch -M main переименование ветки в main
 git push -u origin main отправка новой ветки проекта на git
