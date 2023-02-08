@@ -2,13 +2,20 @@
   "name": "proj",
   "version": "0.1.0",
   "private": true,
+  "description": "## Project setup ``` npm install ```",
+  "author": "",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
+  "main": "babel.config.js",
   "dependencies": {
+    "@tailwindcss/forms": "^0.5.3",
+    "autoprefixer": "^10",
     "core-js": "^3.8.3",
+    "postcss": "^8",
+    "tailwindcss": "^3",
     "vue": "^3.2.13"
   },
   "devDependencies": {
@@ -21,7 +28,8 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.0.3",
-    "prettier": "^2.4.1"
+    "prettier": "^2.4.1",
+    "vue-cli-plugin-tailwind": "~3.0.0"
   },
   "eslintConfig": {
     "root": true,
@@ -44,8 +52,5 @@
     "not dead",
     "not ie 11"
   ],
-  "description": "## Project setup ``` npm install ```",
-  "main": "babel.config.js",
-  "author": "",
   "license": "ISC"
 }

@@ -195,6 +195,7 @@ export default {
         name: this.ticker.toUpperCase(),
         price: "-",
       };
+
       // add new ticker in currentTicker
       this.tickers.push(currentTicker);
       setInterval(async () => {
@@ -202,9 +203,11 @@ export default {
           `https://min-api.cryptocompare.com/data/price?fsym=${currentTicker.name}&tsyms=USD&api_key=c0e03c0d30b9075756e9759fa40dcbd551ac802a4a476729c44fe78b925b570e`
         );
         const data = await f.json();
+
         // normalize price
         this.tickers.find((t) => t.name === currentTicker.name).price =
           data.USD > 1 ? data.USD.toFixed(2) : data.USD.toPrecision(2);
+
         // push price in graph
         if (this.sel?.name === currentTicker.name) {
           this.graph.push(data.USD);
@@ -212,16 +215,19 @@ export default {
       }, 5000);
       this.ticker = "";
     },
+
     // seleck ticker
     select(ticker) {
       this.sel = ticker;
       this.graph = [];
     },
+
     // delete cart
     handleDelete(tickerToRemove) {
       this.tickers = this.tickers.filter((t) => t !== tickerToRemove);
       this.sel = null;
     },
+
     // normalize graph
     normalizeGraph() {
       const maxValue = Math.max(...this.graph);
@@ -238,5 +244,3 @@ export default {
   // },
 };
 </script>
-
-<style src="./app.css"></style>
