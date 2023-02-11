@@ -184,12 +184,43 @@ export default {
       tickers: [],
       sel: null,
       graph: [],
+      load: true,
+      coinList: [],
+      aaaa: [],
       page: 1,
       filter: "",
       hasNextPage: true,
     };
   },
+
+  created() {
+    const tackersData = localStorage.getItem("cryptonomicon-list");
+    if (tackersData) {
+      this.tickers = JSON.parse(tackersData);
+      this.tickers.forEach((ticker) => {
+        this.subscribeToUpdates(ticker.name);
+      });
+    }
+  },
+
   methods: {
+    subscribeToUpdates(tickerName) {
+      setInterval(async () => {
+        const f = await fetch(
+          `https://min-api.cryptocompare.com/data/price?fsym=${tickerName}&tsyms=USD&api_key=c0e03c0d30b9075756e9759fa40dcbd551ac802a4a476729c44fe78b925b570e`
+        );
+        const data = await f.json();
+
+        // normalize price
+        this.tickers.find((t) => t.name === tickerName).price =
+          data.USD > 1 ? data.USD.toFixed(2) : data.USD.toPrecision(2);
+
+        // push price in graph
+        if (this.sel?.name === tickerName) {
+          this.graph.push(data.USD);
+        }
+      }, 5000);
+    },
     add() {
       const currentTicker = {
         name: this.ticker.toUpperCase(),
@@ -198,21 +229,10 @@ export default {
 
       // add new ticker in currentTicker
       this.tickers.push(currentTicker);
-      setInterval(async () => {
-        const f = await fetch(
-          `https://min-api.cryptocompare.com/data/price?fsym=${currentTicker.name}&tsyms=USD&api_key=c0e03c0d30b9075756e9759fa40dcbd551ac802a4a476729c44fe78b925b570e`
-        );
-        const data = await f.json();
 
-        // normalize price
-        this.tickers.find((t) => t.name === currentTicker.name).price =
-          data.USD > 1 ? data.USD.toFixed(2) : data.USD.toPrecision(2);
+      localStorage.setItem("cryptonomicon-list", JSON.stringify(this.tickers));
+      this.subscribeToUpdates(currentTicker.name);
 
-        // push price in graph
-        if (this.sel?.name === currentTicker.name) {
-          this.graph.push(data.USD);
-        }
-      }, 5000);
       this.ticker = "";
     },
 
@@ -237,10 +257,6 @@ export default {
       );
     },
   },
-  // created: {
-  //   tickersCard() {
-  //     console.log(this.tickers);
-  //   },
-  // },
+  // coin list https://min-api.cryptocompare.com/data/all/coinlist?summary=true
 };
 </script>
